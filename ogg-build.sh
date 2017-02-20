@@ -105,7 +105,7 @@ EOF2
         mount -a
         
         if [ ! -f /mnt/software/ogg12201/V100692-01.zip ]; then
-            fatalError "installGridHome(): media missing /mnt/software/ogg12201/V100692-01.zip"
+            fatalError "mountMedia(): media missing /mnt/software/ogg12201/V100692-01.zip"
         fi
 
     fi
@@ -120,8 +120,9 @@ installOGG()
     local l_tmp_script=$LOG_DIR/$g_prog.installOGG.$$.sh
     local l_tmp_responsefile=$LOG_DIR/$g_prog.installOGG.$$.rsp
     local l_runInstaller_log=$LOG_DIR/$g_prog.installOGG.$$.runinstaller.log
+    local l_ogginstall_log=$LOG_DIR/$g_prog.installOGG.$$.OGGinstall.log
     local l_ogg_stage=$STAGE_DIR/ogg1221
-
+    
     if [ ! -f ${l_media1} ]; then
         fatalError "installOGG(): media missing ${l_media1}"
     fi
@@ -159,7 +160,7 @@ EOFiogg1
     chmod 644 ${l_tmp_responsefile}
 
     ################################
-    # Create script to run as grid
+    # Create script to run as oracle
     ################################
     cat > $l_tmp_script << EOFiogg2
 rm -rf $STAGE_DIR
@@ -173,7 +174,7 @@ EOFiogg2
     ################################
     # Run the script
     ################################
-    su - oracle -c "bash -x $l_tmp_script" |tee ${l_gridinstall_log}
+    su - oracle -c "bash -x $l_tmp_script" |tee ${l_ogginstall_log}
     
 }
 
