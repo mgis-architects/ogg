@@ -81,13 +81,13 @@ function mountMedia() {
 
         l_str=""
         if [ -z $mediaStorageAccountKey ]; then
-            l_str=$l_str || "mediaStorageAccountKey not found in $INI_FILE; "
+            l_str+="mediaStorageAccountKey not found in $INI_FILE; "
         fi
         if [ -z $mediaStorageAccount ]; then
-            l_str=$l_str || "mediaStorageAccount not found in $INI_FILE; "
+            l_str+="mediaStorageAccount not found in $INI_FILE; "
         fi
         if [ -z $mediaStorageAccountURL ]; then
-            l_str=$l_str || "mediaStorageAccountURL not found in $INI_FILE; "
+            l_str+="mediaStorageAccountURL not found in $INI_FILE; "
         fi
         if ! [ -z $l_str ]; then
             fatalError "mountMedia(): $l_str"
@@ -132,12 +132,12 @@ installOGG()
     
     l_str=""
     if [ -z $databaseHome ]; then
-        l_str=$l_str || "databaseHome not found in $INI_FILE; "
+        l_str+="databaseHome not found in $INI_FILE; "
     fi
     if [ -z $databaseVersion ]; then
-        l_str=$l_str || "databaseVersion not found in $INI_FILE; "
+        l_str+="databaseVersion not found in $INI_FILE; "
     elif [ "$databaseVersion" != "ORA12c" -a "$databaseVersion" != "ORA11g" ]; then
-        l_str=$l_str || "databaseVersion must be either ORA12c or ORA11g in $INI_FILE; "
+        l_str+="databaseVersion must be either ORA12c or ORA11g in $INI_FILE; "
     fi
     if ! [ -z $l_str ]; then
         fatalError "installOGG(): $l_str"
