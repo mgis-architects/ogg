@@ -81,9 +81,20 @@ function configureDbForOGG() {
     export ORACLE_SID=${cdbSID}
     
     sqlplus / as sysdba << EOFsql1
+        alter system switch logfile;
+        alter system switch logfile;
+        alter system switch logfile;
+        alter system switch logfile;
+        alter system switch logfile;
+        alter system switch logfile;
         alter database add supplemental log data;
         alter database force logging;
-        SELECT supplemental_log_data_min, force_logging FROM v\$database;
+        SELECT supplemental_log_data_min, force_logging FROM v\\\$database;
+        alter system switch logfile;
+        alter system switch logfile;
+        alter system switch logfile;
+        alter system switch logfile;
+        alter system switch logfile;
         alter system switch logfile;
         alter system set enable_goldengate_replication=true sid='*' scope=both;
         create user c##ggadmin identified by ${ggadminPassword} default tablespace users temporary tablespace temp;
