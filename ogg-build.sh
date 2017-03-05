@@ -114,7 +114,7 @@ EOF2
 
 installOGG()
 {
-    local l_installdir=/u01/app/oracle/product/12.2.1/ogg
+    local l_installdir=${oggHome}
     local l_media1=/mnt/software/ogg12201/V100692-01.zip # OGG 12.2 media
     local l_media2=/mnt/software/ogg12201/V138402-01.zip # OGG4BD 12.2 media ... not used here
     local l_tmp_script=$LOG_DIR/$g_prog.installOGG.$$.sh
@@ -178,6 +178,14 @@ EOFiogg2
     
 }
 
+function alterOracleProfile() 
+{
+    cat >> /home/oracle/.bash_profile << EOForacleProfile
+    export OGG_HOME=${oggHome}
+    export PATH=${oggHome}/bin:\$PATH
+EOForacleProfile
+}
+
 function run()
 {
     eval `grep platformEnvironment $INI_FILE`
@@ -186,10 +194,13 @@ function run()
     elif [ $platformEnvironment != "AZURE" ]; then    
         fatalError "$g_prog.run(): platformEnvironment=AZURE is the only valid setting currently"
     fi
+    
+    oggHome=/u01/app/oracle/product/12.2.1/ogg
 
     # function calls
     mountMedia
     installOGG
+    alterOracleProfile
 }
 
 
