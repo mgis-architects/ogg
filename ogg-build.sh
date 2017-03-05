@@ -190,12 +190,25 @@ EOForacleProfile
 function run()
 {
     eval `grep platformEnvironment $INI_FILE`
+    eval `grep ogg4bdMgrHost $INI_FILE`
+    eval `grep ogg4bdMgrPort $INI_FILE`
+	
     if [ -z $platformEnvironment ]; then    
-        fatalError "$g_prog.run(): Unknown environment, check platformEnvironment setting in iniFile"
-    elif [ $platformEnvironment != "AZURE" ]; then    
-        fatalError "$g_prog.run(): platformEnvironment=AZURE is the only valid setting currently"
+        l_str+="$g_prog.run(): Unknown environment, check platformEnvironment setting in iniFile"
+	fi
+    if [ $platformEnvironment != "AZURE" ]; then    
+        l_str+="$g_prog.run(): platformEnvironment=AZURE is the only valid setting currently"
     fi
-    
+    if [ -z $ogg4bdMgrHost ]; then
+        l_str+="${g_prog}(): ogg4bdMgrHost not found in $INI_FILE; "
+    fi
+    if [ -z $ogg4bdMgrPort ]; then
+        l_str+="${g_prog}(): ogg4bdMgrPort not found in $INI_FILE; "
+    fi
+    if ! [ -z $l_str ]; then
+        fatalError "$g_prog(): $l_str"
+    fi
+
     oggHome=/u01/app/oracle/product/12.2.1/ogg
 
     # function calls
