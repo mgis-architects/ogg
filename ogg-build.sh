@@ -183,6 +183,7 @@ function alterOracleProfile()
     cat >> /home/oracle/.bash_profile << EOForacleProfile
     export OGG_HOME=${oggHome}
     export PATH=${oggHome}/bin:\$PATH
+    export LD_LIBRARY_PATH=\$ORACLE_HOME/lib:\$LD_LIBRARY_PATH
 EOForacleProfile
 }
 
