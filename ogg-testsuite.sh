@@ -33,9 +33,6 @@ SCR=$(basename "${BASH_SOURCE[0]}")
 THIS_SCRIPT=$THISDIR/$SCR
 
 oggHome=/u01/app/oracle/product/12.2.1/ogg
-ogg4bdHome=/u01/app/oracle/product/12.3.0/ogg4bd
-
-
 
 ######################################################
 ## log()
@@ -163,14 +160,22 @@ function oggInitialExtract() {
 SOURCEISTABLE    
 userid c##ggadmin@${cdbConnectStr},password \${oggEncrypted}, BLOWFISH, ENCRYPTKEY DEFAULT
 RMTHOST ${ogg4bdHost}, MGRPORT ${ogg4bdMgrPort}
-RMTFILE ${ogg4bdHome}/dirdat/initld, MEGABYTES 2, PURGE
+RMTFILE ${ogg4bdDestination}/initld, MEGABYTES 2, PURGE
 SOURCECATALOG ${pdbName}
 TABLE ${simpleSchema}.*;
 EOFextr
 
+        ./ggsci << EOFtrandata
+        dblogin userid c##ggadmin@${cdbConnectStr},password \${oggEncrypted}, BLOWFISH, ENCRYPTKEY DEFAULT
+        ADD SCHEMATRANDATA ${simpleSchema} ALLCOLS
+        ADD SCHEMATRANDATA ${pdbName}.${simpleSchema}
+EOFtrandata
+
+
+
         #############################################################################        
         ./extract paramfile dirprm/ini_ext.prm reportfile dirrpt/ini_ext.rpt
-        ls -l ${ogg4bdHome}/dirdat/initld        
+        ls -l ${ogg4bdDestination}/initld        
 
 EOFiniext
 
@@ -198,7 +203,7 @@ function oggCreateExtract() {
 extract exbasic1
 userid c##ggadmin@${cdbConnectStr},password \${oggEncrypted}, BLOWFISH, ENCRYPTKEY DEFAULT
 RMTHOST ${ogg4bdHost}, MGRPORT ${ogg4bdMgrPort}
-RMTFILE ${ogg4bdHome}/dirdat/ss, MEGABYTES 2, PURGE
+RMTFILE ${ogg4bdDestination}/ss, MEGABYTES 2, PURGE
 SOURCECATALOG ${pdbName}
 DDL include objname ${simpleSchema}.*
 TABLE ${simpleSchema}.*;
@@ -208,6 +213,7 @@ EOFexbasic1
         ./ggsci << EOFggsci1
         dblogin userid c##ggadmin@${cdbConnectStr},password \${oggEncrypted}, BLOWFISH, ENCRYPTKEY DEFAULT
         register extract exbasic1 database container ($pdbName)
+        ADD SCHEMATRANDATA ${pdbName}.${simpleSchema} ALLCOLS
         add extract exbasic1, INTEGRATED TRANLOG, BEGIN NOW
 EOFggsci1
 
@@ -236,7 +242,7 @@ function run()
     eval `grep pdbDBApassword $INI_FILE`
     eval `grep ogg4bdHost $INI_FILE`
     eval `grep ogg4bdMgrPort $INI_FILE`
-    
+	eval `grep ogg4bdDestination $INI_FILE`
 
     l_str=""
     if [ -z $simpleSchema ]; then
@@ -268,6 +274,9 @@ function run()
     fi
     if [ -z $ogg4bdMgrPort ]; then
         l_str+="ogg4bdMgrPort not found in $INI_FILE; "
+    fi
+    if [ -z $ogg4bdDestination ]; then
+        l_str+="ogg4bdDestination not found in $INI_FILE; "
     fi
     if ! [ -z $l_str ]; then
         fatalError "installSimpleSchema(): $l_str"
