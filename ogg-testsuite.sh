@@ -156,7 +156,7 @@ function oggInitialExtract() {
         eval \`grep 'Encrypted password' ~/.oggEncryptOutput | awk '{print "oggEncrypted="\$NF}'\`
 
         #############################################################################        
-        cat >> ${oggHome}/dirprm/ini_ext.prm << EOFextr
+        cat >> ${oggHome}/dirprm/ie_avro1.prm << EOFextr
 SOURCEISTABLE    
 userid c##ggadmin@${cdbConnectStr},password \${oggEncrypted}, BLOWFISH, ENCRYPTKEY DEFAULT
 RMTHOST ${ogg4bdHost}, MGRPORT ${ogg4bdMgrPort}
@@ -174,8 +174,8 @@ EOFtrandata
 
 
         #############################################################################        
-        ./extract paramfile dirprm/ini_ext.prm reportfile dirrpt/ini_ext.rpt
-        ls -l ${ogg4bdDestination}/initld        
+        ./extract paramfile dirprm/ie_avro1.prm reportfile dirrpt/ie_avro1.rpt
+        ls -l ${ogg4bdDestination}/ie_avro1_initld
 
 EOFiniext
 
@@ -199,11 +199,11 @@ function oggCreateExtract() {
         eval \`grep 'Encrypted password' ~/.oggEncryptOutput | awk '{print "oggEncrypted="\$NF}'\`
 
         #############################################################################        
-        cat > ${oggHome}/dirprm/exbasic1.prm << EOFexbasic1
-extract exbasic1
+        cat > ${oggHome}/dirprm/eavro1.prm << EOFexbasic1
+extract eavro1
 userid c##ggadmin@${cdbConnectStr},password \${oggEncrypted}, BLOWFISH, ENCRYPTKEY DEFAULT
 RMTHOST ${ogg4bdHost}, MGRPORT ${ogg4bdMgrPort}
-RMTFILE ${ogg4bdDestination}/ss, MEGABYTES 2, PURGE
+RMTFILE ${ogg4bdDestination}/a1, MEGABYTES 2, PURGE
 SOURCECATALOG ${pdbName}
 DDL include objname ${simpleSchema}.*
 TABLE ${simpleSchema}.*;
@@ -212,9 +212,9 @@ EOFexbasic1
         #############################################################################        
         ./ggsci << EOFggsci1
         dblogin userid c##ggadmin@${cdbConnectStr},password \${oggEncrypted}, BLOWFISH, ENCRYPTKEY DEFAULT
-        register extract exbasic1 database container ($pdbName)
+        register extract eavro1 database container ($pdbName)
         ADD SCHEMATRANDATA ${pdbName}.${simpleSchema} ALLCOLS
-        add extract exbasic1, INTEGRATED TRANLOG, BEGIN NOW
+        add extract eavro1, INTEGRATED TRANLOG, BEGIN NOW
 EOFggsci1
 
 
